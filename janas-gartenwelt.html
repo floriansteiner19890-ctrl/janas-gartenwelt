@@ -1,0 +1,1810 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover" />
+  <title>JANAS Gartenwelt</title>
+
+  <!-- PWA light -->
+  <meta name="theme-color" content="#fff7f0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="JANAS Gartenwelt">
+  <meta name="application-name" content="JANAS Gartenwelt">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <style>
+    :root{
+      --bg1:#fff7f0;
+      --bg2:#fffdf8;
+      --ink:#2c2a27;
+      --muted:#6d6660;
+      --accent:#c96a63;
+      --accent2:#6da78b;
+      --line:rgba(0,0,0,.08);
+      --shadow: 0 14px 45px rgba(0,0,0,.10);
+      --shadow2: 0 10px 25px rgba(0,0,0,.08);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--ink);
+      background:
+        radial-gradient(900px 600px at 10% 10%, rgba(201,106,99,.18), transparent 55%),
+        radial-gradient(850px 600px at 90% 15%, rgba(109,167,139,.18), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+    }
+    body.modal-open{ overflow:hidden; }
+
+    .wrap{max-width:1200px;margin:0 auto;padding:22px 16px 70px}
+    header{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
+      padding:14px 12px 8px;
+    }
+    .brand{display:flex; gap:14px; align-items:center;}
+    .logo{
+      width:56px;height:56px;border-radius:18px;
+      background: linear-gradient(135deg, rgba(201,106,99,.28), rgba(109,167,139,.28));
+      box-shadow: var(--shadow2);
+      display:grid; place-items:center;
+      border:1px solid var(--line);
+    }
+    .logo span{font-size:26px}
+    h1{margin:0;font-size:26px;letter-spacing:.2px}
+    .subtitle{margin:6px 0 0;color:var(--muted);line-height:1.35}
+
+    .btn{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.65);
+      backdrop-filter: blur(6px);
+      color:var(--ink);
+      border-radius: 999px;
+      padding:10px 14px;
+      display:inline-flex; align-items:center; gap:8px;
+      cursor:pointer;
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
+      user-select:none;
+      transition:.15s transform, .15s box-shadow;
+      font-weight:800;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+    .btn:hover{transform: translateY(-1px); box-shadow: 0 14px 22px rgba(0,0,0,.10)}
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(201,106,99,.20), rgba(109,167,139,.20));
+      border:1px solid rgba(201,106,99,.25);
+    }
+    .btn.danger{
+      background: rgba(201,106,99,.10);
+      border-color: rgba(201,106,99,.25);
+      color:#8a2f2b;
+    }
+    .btn.small{padding:8px 10px;font-size:13px;font-weight:800}
+    .btn.ghost{background: rgba(255,255,255,.55)}
+    .row{display:flex; gap:12px; flex-wrap:wrap}
+
+    .pill{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.7);
+      color:var(--muted);
+      font-weight:800;
+      display:inline-flex; gap:8px; align-items:center;
+    }
+    .pill strong{color:var(--ink)}
+    .muted{color:var(--muted)}
+    .tiny{font-size:12px}
+    .divider{height:1px;background:var(--line);margin:12px 0}
+
+    .card{
+      background: rgba(255,255,255,.78);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
+    }
+    .card h2{margin:0 0 10px;font-size:16px;letter-spacing:.2px}
+    .hint{color:var(--muted);font-size:12px;line-height:1.35;}
+
+    /* Nav */
+    .nav{
+      display:flex; gap:8px; flex-wrap:wrap;
+      padding:10px 12px 0;
+    }
+    .tab{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.66);
+      border-radius:999px;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight:900;
+      color:var(--muted);
+      display:inline-flex; align-items:center; gap:8px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
+    }
+    .tab.active{
+      color:var(--ink);
+      background: linear-gradient(135deg, rgba(201,106,99,.16), rgba(109,167,139,.16));
+      border-color: rgba(201,106,99,.22);
+    }
+
+    /* Layout */
+    .grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+    @media (max-width: 980px){ .grid2{grid-template-columns:1fr} header{flex-direction:column} }
+
+    /* Inputs */
+    label{font-size:12px;color:var(--muted);font-weight:900}
+    input, textarea, select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.8);
+      outline:none;
+      font-size:14px;
+      color:var(--ink);
+    }
+    textarea{min-height:90px; resize:vertical}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width: 720px){ .form{grid-template-columns:1fr} }
+
+    /* Tiles */
+    .tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    @media (max-width: 980px){ .tiles{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    @media (max-width: 640px){ .tiles{grid-template-columns:1fr} }
+    .tile{
+      border:1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255,255,255,.84);
+      box-shadow: 0 12px 26px rgba(0,0,0,.08);
+      padding:12px;
+    }
+    .tileHead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+    .tile h3{margin:0;font-size:15px}
+    .counts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .count{padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.7);font-weight:900;font-size:12px;color:var(--muted)}
+    .count b{color:var(--ink)}
+    .tileActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+    /* Plant list */
+    .listHead{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .search{
+      flex:1; min-width:220px;
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px;border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.7);
+    }
+    .search input{border:none;background:transparent;outline:none;width:100%;font-size:14px;color:var(--ink)}
+    .plants{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    @media (max-width: 760px){ .plants{grid-template-columns:1fr} }
+    .plant{
+      background: rgba(255,255,255,.88);
+      border:1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 12px 26px rgba(0,0,0,.08);
+      overflow:hidden;
+      display:flex;
+      min-height:170px;
+    }
+    .plant .photo{
+      width:148px; min-width:148px;
+      background: linear-gradient(135deg, rgba(201,106,99,.18), rgba(109,167,139,.18));
+      border-right:1px solid var(--line);
+      display:grid; place-items:center;
+      position:relative;
+    }
+    .plant .photo img{width:100%;height:100%;object-fit:cover;display:block}
+    .plant .photo .ph{font-size:30px;opacity:.65}
+    .plant .body{padding:12px;flex:1;display:flex;flex-direction:column;gap:8px}
+    .plant .top{display:flex;justify-content:space-between;gap:8px}
+    .plant h3{margin:0;font-size:16px}
+    .status{font-weight:950;border-radius:999px;padding:6px 10px;border:1px solid var(--line);background:rgba(255,255,255,.65);white-space:nowrap}
+    .meta{display:flex;flex-wrap:wrap;gap:8px}
+    .tag{
+      font-size:12px;font-weight:950;
+      padding:6px 9px;border-radius:999px;
+      background: rgba(109,167,139,.12);
+      border:1px solid rgba(109,167,139,.20);
+      color:#2f5d49;
+    }
+    .tag.rose{background:rgba(201,106,99,.12);border:1px solid rgba(201,106,99,.22);color:#7d3732}
+    .tag.gray{background:rgba(0,0,0,.04);border:1px solid var(--line);color:var(--muted)}
+    .note{color:var(--muted);font-size:13px;line-height:1.35;display:-webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow:hidden;min-height:3.8em}
+    .plant .actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+    /* Panels */
+    .panel{
+      border:1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.86);
+      padding:12px;
+    }
+
+    /* Tasks */
+    .calList{display:grid;gap:10px}
+    .calItem{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.86);padding:12px}
+    .badge{display:inline-flex;gap:8px;align-items:center;padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.7);font-weight:950;font-size:12px;color:var(--muted)}
+    .badge b{color:var(--ink)}
+    .task{
+      border:1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.86);
+      padding:12px;
+      display:flex; gap:10px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
+    }
+    .task .left{min-width:240px}
+    .task .right{display:flex;gap:8px;flex-wrap:wrap}
+
+    /* Detail */
+    .detailGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width: 900px){ .detailGrid{grid-template-columns:1fr} }
+    .gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    @media (max-width: 700px){ .gallery{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    .thumb{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+    .thumb img{width:100%;height:120px;object-fit:cover;display:block}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;font-size:12px;word-break:break-all;color:var(--muted)}
+
+    /* MODALS (scroll + max height, PC + iPhone) */
+    .modalBack{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.30);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:50;
+
+      padding:
+        calc(18px + env(safe-area-inset-top))
+        calc(18px + env(safe-area-inset-right))
+        calc(18px + env(safe-area-inset-bottom))
+        calc(18px + env(safe-area-inset-left));
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .modal{
+      width:min(980px, 100%);
+      background: rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+
+      max-height: calc(100vh - 36px);
+      display:flex;
+      flex-direction:column;
+    }
+    .modal header{
+      padding:14px 16px;
+      background: linear-gradient(135deg, rgba(201,106,99,.12), rgba(109,167,139,.12));
+      border-bottom:1px solid var(--line);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      flex: 0 0 auto;
+    }
+    .modal header h2{margin:0;font-size:16px}
+    .modal .content{
+      padding:14px 16px 16px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      flex: 1 1 auto;
+    }
+    .modal .footer{
+      padding:12px 16px 16px;
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      border-top:1px solid var(--line);
+      background: rgba(255,255,255,.75);
+      flex: 0 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"><span>🌸</span></div>
+        <div>
+          <h1>JANAS Gartenwelt</h1>
+          <p class="subtitle">Beete & Bereiche • Aufgaben • Kalender • Probleme • Timeline • QR • Backup</p>
+          <div class="row" style="margin-top:10px">
+            <span class="pill"><span>💗</span> <strong>Für Jana</strong> <span class="muted tiny">– Garten-Organizer</span></span>
+            <span class="pill"><span>💾</span> <strong>Lokal gespeichert</strong> <span class="muted tiny">(Export/Import empfohlen)</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn primary" id="btnAddPlant"><span>➕</span> Pflanze</button>
+        <button class="btn" id="btnAddArea"><span>📍</span> Bereich/Beet</button>
+        <button class="btn" id="btnWeather"><span>🌦️</span> Wetter</button>
+        <button class="btn" id="btnExport"><span>📦</span> Export</button>
+        <label class="btn" style="cursor:pointer">
+          <span>📥</span> Import
+          <input id="importFile" type="file" accept="application/json" style="display:none" />
+        </label>
+        <button class="btn danger" id="btnReset"><span>🧹</span> Reset</button>
+      </div>
+    </header>
+
+    <div class="nav" id="nav"></div>
+
+    <!-- DASHBOARD -->
+    <div id="sec_dashboard" class="card" style="margin:12px 12px 0;">
+      <div class="grid2">
+        <div>
+          <h2>🌦️ Heute im Garten</h2>
+          <div class="row" id="dashPills"></div>
+
+          <div class="divider"></div>
+          <div class="row">
+            <div class="pill" style="flex:1;min-width:260px"><span>💧</span><span><strong id="needNow">–</strong> <span class="muted">heute gießen</span></span></div>
+            <div class="pill" style="flex:1;min-width:260px"><span>🟡</span><span><strong id="needSoon">–</strong> <span class="muted">bald gießen</span></span></div>
+            <div class="pill" style="flex:1;min-width:260px"><span>🟢</span><span><strong id="needOk">–</strong> <span class="muted">ok</span></span></div>
+          </div>
+
+          <div class="divider"></div>
+          <h2>⚡ Schnellaktionen</h2>
+          <div id="quickActions" class="calList"></div>
+
+          <div class="divider"></div>
+          <h2>🗺️ Bereiche-Übersicht</h2>
+          <div class="tiles" id="areaTiles"></div>
+
+          <p class="hint" style="margin:12px 2px 0">
+            Tipp: „Zum Home-Bildschirm“ (Safari/Chrome) macht daraus praktisch eine App.
+          </p>
+        </div>
+
+        <div>
+          <div class="panel">
+            <h2 style="margin-top:0">🌡️ Wetter-Mini</h2>
+            <p class="muted" style="margin:0 0 10px">
+              Bonus (Internet nötig). Offline läuft alles weiter – nur Wetter/QR-Bild nicht.
+            </p>
+            <div class="row" style="margin-top:6px">
+              <span class="pill"><span>📍</span> <strong id="loc">–</strong></span>
+              <span class="pill"><span>🌡</span> <strong id="temp">–</strong></span>
+              <span class="pill"><span>🌧</span> <strong id="rain">–</strong></span>
+            </div>
+            <div class="divider"></div>
+            <p class="muted" style="margin:0">
+              <b>Gieß-Logik:</b> Hitze + hoher Wasserbedarf → schneller rot. Regen → etwas entspannter.
+            </p>
+          </div>
+
+          <div class="panel" style="margin-top:12px">
+            <h2 style="margin-top:0">✅ Heute fällige Aufgaben</h2>
+            <div id="todayTasksMini" class="calList"></div>
+            <p class="hint" style="margin:10px 0 0">
+              Mehr im Tab <b>Aufgaben</b>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AREAS -->
+    <div id="sec_areas" class="card" style="display:none;margin:12px 12px 0;">
+      <h2>📍 Bereiche & Beete</h2>
+      <div class="grid2">
+        <div class="panel">
+          <h3 style="margin:0 0 8px;font-size:16px">Bereich anlegen</h3>
+          <div class="form">
+            <div class="field">
+              <label>Bereich-Name</label>
+              <input id="newAreaName" placeholder="z.B. Vorgarten, Terrasse, Hochbeet-Zone…" />
+            </div>
+            <div class="field" style="align-self:end">
+              <button class="btn primary" id="btnCreateArea">➕ Bereich erstellen</button>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <h3 style="margin:0 0 8px;font-size:16px">Beet anlegen</h3>
+          <div class="form">
+            <div class="field">
+              <label>Bereich</label>
+              <select id="bedAreaSelect"></select>
+            </div>
+            <div class="field">
+              <label>Beet-Name</label>
+              <input id="newBedName" placeholder="z.B. Beet 1, links am Zaun, Kräuterecke…" />
+            </div>
+            <div class="field" style="grid-column:1/-1">
+              <button class="btn primary" id="btnCreateBed">➕ Beet erstellen</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 style="margin:0 0 8px;font-size:16px">Verwaltung</h3>
+          <div id="areasList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLANTS -->
+    <div id="sec_plants" class="card" style="display:none;margin:12px 12px 0;">
+      <h2>🌿 Pflanzen</h2>
+      <div class="listHead">
+        <div class="search"><span aria-hidden="true">🔎</span><input id="q" placeholder="Suche… (Name, Notizen, Bereich, Beet)" /></div>
+        <select id="areaFilter"></select>
+        <select id="statusFilter">
+          <option value="all">Alle</option>
+          <option value="red">🔴 Heute gießen</option>
+          <option value="yellow">🟡 Bald gießen</option>
+          <option value="green">🟢 Ok</option>
+        </select>
+      </div>
+      <div class="plants" id="plants"></div>
+    </div>
+
+    <!-- TASKS -->
+    <div id="sec_tasks" class="card" style="display:none;margin:12px 12px 0;">
+      <h2>✅ Aufgaben</h2>
+      <div class="row" style="margin-bottom:10px">
+        <span class="pill"><span>💧</span> <strong>Gießen</strong></span>
+        <span class="pill"><span>🌱</span> <strong>Düngen</strong></span>
+        <span class="pill"><span>✂️</span> <strong>Schneiden</strong></span>
+      </div>
+      <div class="row" style="margin-bottom:10px">
+        <select id="taskScope">
+          <option value="due">Fällig (heute/überfällig)</option>
+          <option value="soon">Bald fällig</option>
+          <option value="all">Alle</option>
+        </select>
+        <select id="taskArea"></select>
+      </div>
+      <div id="tasksList" class="calList"></div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div id="sec_calendar" class="card" style="display:none;margin:12px 12px 0;">
+      <h2>🗓️ Saison-Kalender</h2>
+      <div class="row" style="margin-bottom:10px">
+        <select id="calMonth"></select>
+        <select id="calArea"></select>
+      </div>
+      <div id="calendarList" class="calList"></div>
+      <p class="hint" style="margin-top:10px">
+        Monate setzt du im Pflanzen-Detail (Aussaat / Auspflanzen / Ernte).
+      </p>
+    </div>
+
+    <!-- PROBLEMS -->
+    <div id="sec_problems" class="card" style="display:none;margin:12px 12px 0;">
+      <div class="row" style="align-items:center;justify-content:space-between">
+        <h2 style="margin:0">🐛 Probleme & Schädlinge</h2>
+        <button class="btn primary" id="btnAddProblem">➕ Problem</button>
+      </div>
+      <div class="row" style="margin:10px 0">
+        <select id="probStatus">
+          <option value="open">Offen</option>
+          <option value="all">Alle</option>
+          <option value="closed">Gelöst</option>
+        </select>
+        <select id="probArea"></select>
+      </div>
+      <div id="problemsList" class="calList"></div>
+    </div>
+
+    <!-- BACKUP -->
+    <div id="sec_backup" class="card" style="display:none;margin:12px 12px 0;">
+      <h2>📦 Backup</h2>
+      <p class="muted" style="margin:0 0 10px">
+        Export/Import ist die beste Option fürs iPhone (damit nichts verloren geht).
+      </p>
+      <div class="row">
+        <button class="btn primary" id="btnExport2">📦 Export als JSON</button>
+        <label class="btn" style="cursor:pointer">
+          📥 Import JSON
+          <input id="importFile2" type="file" accept="application/json" style="display:none" />
+        </label>
+      </div>
+      <div class="divider"></div>
+      <div class="panel">
+        <div class="hint">
+          Tipp: Nach größeren Updates exportieren. Wenn ihr das später hostet, funktionieren QR-Deep-Links perfekt.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODALS -->
+  <div class="modalBack" id="plantBack" role="dialog" aria-modal="true">
+    <div class="modal">
+      <header>
+        <h2 id="plantTitle">🌿 Pflanze</h2>
+        <div class="row">
+          <button class="btn small ghost" id="btnPlantQR">🏷️ QR</button>
+          <button class="btn small" id="btnPlantClose">Schließen</button>
+        </div>
+      </header>
+      <div class="content">
+        <div class="detailGrid">
+          <div class="panel">
+            <h3 style="margin:0 0 10px;font-size:16px">Stammdaten</h3>
+            <div class="form">
+              <div class="field">
+                <label>Name</label>
+                <input id="p_name" />
+              </div>
+              <div class="field">
+                <label>Bereich</label>
+                <select id="p_area"></select>
+              </div>
+              <div class="field">
+                <label>Beet</label>
+                <select id="p_bed"></select>
+              </div>
+              <div class="field">
+                <label>Standort</label>
+                <select id="p_sun">
+                  <option value="Sonne">☀️ Sonne</option>
+                  <option value="Halbschatten">⛅ Halbschatten</option>
+                  <option value="Schatten">🌥️ Schatten</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>Wasserbedarf</label>
+                <select id="p_water">
+                  <option value="low">💧 wenig</option>
+                  <option value="medium">💧💧 mittel</option>
+                  <option value="high">💧💧💧 viel</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Gießen Intervall (Tage)</label>
+                <input id="p_waterInt" type="number" min="1" max="60" />
+              </div>
+
+              <div class="field">
+                <label>Düngen Intervall (Tage)</label>
+                <input id="p_fertInt" type="number" min="0" max="365" />
+              </div>
+              <div class="field">
+                <label>Schneiden Intervall (Tage)</label>
+                <input id="p_pruneInt" type="number" min="0" max="365" />
+              </div>
+
+              <div class="field">
+                <label>Zuletzt gegossen</label>
+                <input id="p_lastWater" type="date" />
+              </div>
+              <div class="field">
+                <label>Zuletzt gedüngt</label>
+                <input id="p_lastFert" type="date" />
+              </div>
+              <div class="field">
+                <label>Zuletzt geschnitten</label>
+                <input id="p_lastPrune" type="date" />
+              </div>
+
+              <div class="field">
+                <label>Winterfest?</label>
+                <select id="p_winter">
+                  <option value="yes">❄️ ja</option>
+                  <option value="no">🧤 eher nein</option>
+                </select>
+              </div>
+
+              <div class="field" style="grid-column:1/-1">
+                <label>Notizen</label>
+                <textarea id="p_notes"></textarea>
+              </div>
+
+              <div class="field" style="grid-column:1/-1">
+                <label>Foto (optional)</label>
+                <input id="p_photo" type="file" accept="image/*" />
+                <div class="hint">Wird lokal gespeichert. Für viele Fotos lieber Timeline nutzen.</div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <h3 style="margin:0 0 10px;font-size:16px">Saison-Monate</h3>
+            <div class="form">
+              <div class="field">
+                <label>Aussaat (Monate)</label>
+                <select id="p_sow" multiple size="6"></select>
+              </div>
+              <div class="field">
+                <label>Auspflanzen (Monate)</label>
+                <select id="p_out" multiple size="6"></select>
+              </div>
+              <div class="field" style="grid-column:1/-1">
+                <label>Ernte (Monate)</label>
+                <select id="p_harvest" multiple size="6"></select>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="panel">
+            <h3 style="margin:0 0 10px;font-size:16px">📸 Timeline / Galerie</h3>
+
+            <div class="form">
+              <div class="field">
+                <label>Eintrag-Datum</label>
+                <input id="t_date" type="date" />
+              </div>
+              <div class="field">
+                <label>Foto (optional)</label>
+                <input id="t_photo" type="file" accept="image/*" />
+              </div>
+              <div class="field" style="grid-column:1/-1">
+                <label>Notiz</label>
+                <textarea id="t_note" placeholder="z.B. ‚erste Blüten‘ / ‚Blattläuse entdeckt‘ / ‚umgetopft‘"></textarea>
+              </div>
+              <div class="field" style="grid-column:1/-1">
+                <button class="btn primary" id="btnAddTimeline">➕ Timeline-Eintrag</button>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <div id="timelineList" class="calList"></div>
+            <div class="divider"></div>
+            <div class="gallery" id="gallery"></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="hint">
+          Tipp: Schnell geht „Heute gegossen“ in der Pflanzenliste – Details hier.
+        </div>
+        <div class="row">
+          <button class="btn danger" id="btnDeletePlant">🗑️ Pflanze löschen</button>
+          <button class="btn primary" id="btnSavePlant">💾 Speichern</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalBack" id="areaBack" role="dialog" aria-modal="true">
+    <div class="modal">
+      <header>
+        <h2>📍 Bereich/Beet schnell anlegen</h2>
+        <button class="btn small" id="btnAreaClose">Schließen</button>
+      </header>
+      <div class="content">
+        <div class="hint">Das Gleiche findest du ausführlich im Tab <b>Bereiche</b>.</div>
+        <div class="divider"></div>
+        <div class="grid2">
+          <div class="panel">
+            <h3 style="margin:0 0 8px;font-size:16px">Bereich</h3>
+            <div class="field">
+              <label>Name</label>
+              <input id="quickAreaName" placeholder="z.B. Terrasse" />
+            </div>
+            <button class="btn primary" id="btnQuickArea" style="margin-top:10px">➕ Bereich erstellen</button>
+          </div>
+          <div class="panel">
+            <h3 style="margin:0 0 8px;font-size:16px">Beet</h3>
+            <div class="field">
+              <label>Bereich</label>
+              <select id="quickBedArea"></select>
+            </div>
+            <div class="field" style="margin-top:10px">
+              <label>Beet-Name</label>
+              <input id="quickBedName" placeholder="z.B. Beet 1" />
+            </div>
+            <button class="btn primary" id="btnQuickBed" style="margin-top:10px">➕ Beet erstellen</button>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="hint">Tipp: Einheitliche Bezeichnungen machen Filter/Übersicht perfekt.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalBack" id="probBack" role="dialog" aria-modal="true">
+    <div class="modal">
+      <header>
+        <h2 id="probTitle">🐛 Problem</h2>
+        <button class="btn small" id="btnProbClose">Schließen</button>
+      </header>
+      <div class="content">
+        <div class="form">
+          <div class="field">
+            <label>Pflanze</label>
+            <select id="probPlant"></select>
+          </div>
+          <div class="field">
+            <label>Kategorie</label>
+            <input id="probCat" placeholder="z.B. Schnecken, Blattläuse, Mehltau…" />
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <select id="probStatusEdit">
+              <option value="open">offen</option>
+              <option value="closed">gelöst</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Datum</label>
+            <input id="probDate" type="date" />
+          </div>
+          <div class="field" style="grid-column:1/-1">
+            <label>Beschreibung</label>
+            <textarea id="probDesc" placeholder="Was ist passiert? Wie sieht es aus?"></textarea>
+          </div>
+          <div class="field" style="grid-column:1/-1">
+            <label>Maßnahme</label>
+            <textarea id="probFix" placeholder="z.B. Neem, Absammeln, Kupferband, Rückschnitt…"></textarea>
+          </div>
+          <div class="field" style="grid-column:1/-1">
+            <label>Foto (optional)</label>
+            <input id="probPhoto" type="file" accept="image/*" />
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="row">
+          <button class="btn danger" id="btnProbDelete">🗑️ Löschen</button>
+          <button class="btn primary" id="btnProbSave">💾 Speichern</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalBack" id="qrBack" role="dialog" aria-modal="true">
+    <div class="modal">
+      <header>
+        <h2 id="qrTitle">🏷️ QR-Label</h2>
+        <button class="btn small" id="btnQrClose">Schließen</button>
+      </header>
+      <div class="content">
+        <div class="grid2">
+          <div class="panel">
+            <div class="muted tiny" style="margin-bottom:6px">QR öffnet (gehostet) direkt die Pflanze:</div>
+            <img id="qrImg" alt="QR Code" style="width:100%;max-width:280px;border-radius:16px;border:1px solid var(--line);background:#fff;display:block" />
+            <div class="divider"></div>
+            <div class="muted tiny">Link im QR:</div>
+            <div id="qrText" class="mono"></div>
+          </div>
+          <div class="panel">
+            <h3 style="margin:0 0 10px;font-size:16px" id="qrName">–</h3>
+            <div id="qrMeta" class="row"></div>
+            <div class="divider"></div>
+            <div class="row">
+              <button class="btn primary" id="btnPrintLabels">🖨️ Kleine Etiketten</button>
+              <button class="btn" id="btnPrintSign">🪧 Großes Schild</button>
+              <button class="btn" id="btnCopy">📋 Kopieren</button>
+            </div>
+            <p class="hint" style="margin-top:10px">
+              Tipp: Druckdialog → Skalierung 100% / „Tatsächliche Größe“.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="footer"></div>
+    </div>
+  </div>
+
+<script>
+/* =========================
+   JANAS Gartenwelt – v4
+========================= */
+
+const LS_KEY = "janas_gartenwelt_v4";
+const MONTHS = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+const el = (id)=>document.getElementById(id);
+
+const state = {
+  areas: [],
+  plants: [],
+  problems: [],
+  weather: { ok:false, locationText:"–", tempC:null, rainProb:null, updatedAt:null }
+};
+
+function uid(){ return Math.random().toString(16).slice(2)+Math.random().toString(16).slice(2); }
+function todayISO(){
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+function daysBetween(aISO, bISO){
+  const a = new Date(aISO+"T00:00:00");
+  const b = new Date(bISO+"T00:00:00");
+  return Math.round((b - a) / (1000*60*60*24));
+}
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[s]));
+}
+async function readFileAsDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload = ()=>resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+function load(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    if(Array.isArray(data.areas)) state.areas = data.areas;
+    if(Array.isArray(data.plants)) state.plants = data.plants;
+    if(Array.isArray(data.problems)) state.problems = data.problems;
+    if(data.weather) state.weather = {...state.weather, ...data.weather};
+  }catch(e){ console.warn("Load failed", e); }
+}
+function save(){
+  localStorage.setItem(LS_KEY, JSON.stringify(state));
+}
+
+function ensureDefaults(){
+  if(state.areas.length === 0){
+    state.areas.push({id:uid(), name:"Hochbeet", beds:[{id:uid(), name:"Beet 1"}]});
+    state.areas.push({id:uid(), name:"Terrasse", beds:[{id:uid(), name:"Kräutertöpfe"}]});
+    state.areas.push({id:uid(), name:"Vorgarten", beds:[{id:uid(), name:"Blumenbeet"}]});
+  }
+}
+
+/* PWA light */
+function setupPwaLight(){
+  const iconSvg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#c96a63" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#6da78b" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="120" fill="white"/>
+  <rect x="28" y="28" width="456" height="456" rx="110" fill="url(#g)"/>
+  <text x="50%" y="56%" text-anchor="middle" font-size="250" font-family="system-ui">🌸</text>
+</svg>`.trim();
+
+  const iconData = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(iconSvg);
+
+  let apple = document.querySelector('link[rel="apple-touch-icon"]');
+  if(!apple){
+    apple = document.createElement("link");
+    apple.rel = "apple-touch-icon";
+    document.head.appendChild(apple);
+  }
+  apple.href = iconData;
+
+  const manifest = {
+    name: "JANAS Gartenwelt",
+    short_name: "Gartenwelt",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#fff7f0",
+    theme_color: "#fff7f0",
+    icons: [{ src: iconData, sizes: "512x512", type: "image/svg+xml" }]
+  };
+
+  const manifestHref = "data:application/manifest+json;charset=utf-8," + encodeURIComponent(JSON.stringify(manifest));
+  let m = document.querySelector('link[rel="manifest"]');
+  if(!m){
+    m = document.createElement("link");
+    m.rel = "manifest";
+    document.head.appendChild(m);
+  }
+  m.href = manifestHref;
+
+  let fav = document.querySelector('link[rel="icon"]');
+  if(!fav){
+    fav = document.createElement("link");
+    fav.rel = "icon";
+    document.head.appendChild(fav);
+  }
+  fav.href = iconData;
+}
+
+/* Areas helpers */
+function getArea(areaId){ return state.areas.find(a=>a.id===areaId) || null; }
+function getBed(areaId, bedId){
+  const a = getArea(areaId); if(!a) return null;
+  return (a.beds||[]).find(b=>b.id===bedId) || null;
+}
+function plantAreaName(p){ return getArea(p.areaId)?.name || "–"; }
+function plantBedName(p){ return getBed(p.areaId, p.bedId)?.name || "–"; }
+
+function waterLabel(w){ if(w==="low") return "wenig"; if(w==="high") return "viel"; return "mittel"; }
+function iconSun(sun){ if(sun==="Sonne") return "☀️"; if(sun==="Halbschatten") return "⛅"; return "🌥️"; }
+
+function computeWaterStatus(plant){
+  const interval = Math.max(1, Number(plant.waterInt || 3));
+  const last = plant.lastWater || todayISO();
+  const passed = Math.max(0, daysBetween(last, todayISO()));
+  let ratio = passed / interval;
+
+  const w = plant.waterNeed || "medium";
+  if(w==="high") ratio *= 1.15;
+  if(w==="low")  ratio *= 0.85;
+
+  const t = state.weather.tempC;
+  const r = state.weather.rainProb;
+  if(typeof t === "number"){
+    if(t >= 28) ratio *= 1.15;
+    else if(t >= 24) ratio *= 1.07;
+    else if(t <= 5) ratio *= 0.92;
+  }
+  if(typeof r === "number"){
+    if(r >= 70) ratio *= 0.85;
+    else if(r >= 50) ratio *= 0.92;
+  }
+
+  if(ratio >= 1.0) return {key:"red", text:"🔴 heute", hint:`${passed} Tag(e) seit Gießen`};
+  if(ratio >= 0.70) return {key:"yellow", text:"🟡 bald", hint:`${passed} Tag(e) seit Gießen`};
+  return {key:"green", text:"🟢 ok", hint:`${passed} Tag(e) seit Gießen`};
+}
+
+/* Weather */
+async function fetchWeather(){
+  let lat = 49.45, lon = 11.08;
+  let locationText = "Nähe Nürnberg (Fallback)";
+
+  if(navigator.geolocation){
+    try{
+      const pos = await new Promise((resolve,reject)=>{
+        navigator.geolocation.getCurrentPosition(resolve, reject, {enableHighAccuracy:false, timeout:6000});
+      });
+      lat = pos.coords.latitude;
+      lon = pos.coords.longitude;
+      locationText = "Dein Standort (GPS)";
+    }catch(_){}
+  }
+
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&current=temperature_2m&hourly=precipitation_probability&forecast_days=1`;
+  try{
+    const res = await fetch(url, {cache:"no-store"});
+    if(!res.ok) throw new Error("Weather request failed");
+    const data = await res.json();
+
+    const tempC = data?.current?.temperature_2m;
+    const probs = data?.hourly?.precipitation_probability;
+    let rainProb = null;
+    if(Array.isArray(probs) && probs.length) rainProb = Math.max(...probs.filter(x=>typeof x==="number"));
+
+    state.weather = {
+      ok:true, locationText,
+      tempC: (typeof tempC==="number") ? tempC : null,
+      rainProb: (typeof rainProb==="number") ? rainProb : null,
+      updatedAt: new Date().toISOString()
+    };
+    save(); renderAll();
+  }catch(e){
+    console.warn(e);
+    alert("Wetter konnte nicht geladen werden (offline/blocked). App funktioniert trotzdem 🙂");
+  }
+}
+
+/* NAV */
+const NAV_ITEMS = [
+  {id:"dashboard", icon:"🏡", label:"Übersicht"},
+  {id:"areas", icon:"📍", label:"Bereiche"},
+  {id:"plants", icon:"🌿", label:"Pflanzen"},
+  {id:"tasks", icon:"✅", label:"Aufgaben"},
+  {id:"calendar", icon:"🗓️", label:"Kalender"},
+  {id:"problems", icon:"🐛", label:"Probleme"},
+  {id:"backup", icon:"📦", label:"Backup"},
+];
+let currentSection = "dashboard";
+
+function renderNav(){
+  el("nav").innerHTML = NAV_ITEMS.map(i=>`
+    <button class="tab ${i.id===currentSection ? "active":""}" onclick="showSection('${i.id}')">${i.icon} ${i.label}</button>
+  `).join("");
+}
+function showSection(id){
+  currentSection = id;
+  for(const it of NAV_ITEMS){
+    el("sec_"+it.id).style.display = (it.id===id) ? "block" : "none";
+  }
+  renderNav();
+
+  if(id==="plants") renderPlants();
+  if(id==="areas") renderAreas();
+  if(id==="calendar") renderCalendar();
+  if(id==="problems") renderProblems();
+}
+
+/* Area selects */
+function renderAreaSelects(){
+  const options = state.areas.slice().sort((a,b)=>a.name.localeCompare(b.name,"de"))
+    .map(a=>`<option value="${a.id}">${escapeHtml(a.name)}</option>`).join("");
+
+  el("bedAreaSelect").innerHTML = options;
+  el("quickBedArea").innerHTML = options;
+
+  el("areaFilter").innerHTML = `<option value="all">Alle Bereiche</option>` + options;
+  el("taskArea").innerHTML = `<option value="all">Alle Bereiche</option>` + options;
+  el("calArea").innerHTML = `<option value="all">Alle Bereiche</option>` + options;
+  el("probArea").innerHTML = `<option value="all">Alle Bereiche</option>` + options;
+
+  el("p_area").innerHTML = options || `<option value="">(keine Bereiche)</option>`;
+}
+
+/* CRUD areas */
+function createArea(name){
+  const n = (name||"").trim();
+  if(!n) return alert("Bitte Bereich-Name eingeben 🙂");
+  const exists = state.areas.some(a=>a.name.toLowerCase()===n.toLowerCase());
+  if(exists) return alert("Diesen Bereich gibt es schon 🙂");
+  state.areas.push({id:uid(), name:n, beds:[]});
+  save(); renderAll();
+}
+function createBed(areaId, bedName){
+  const a = getArea(areaId);
+  const n = (bedName||"").trim();
+  if(!a) return alert("Bitte Bereich wählen.");
+  if(!n) return alert("Bitte Beet-Name eingeben 🙂");
+  const exists = (a.beds||[]).some(b=>b.name.toLowerCase()===n.toLowerCase());
+  if(exists) return alert("Dieses Beet gibt es in dem Bereich schon 🙂");
+  a.beds = a.beds || [];
+  a.beds.push({id:uid(), name:n});
+  save(); renderAll();
+}
+function deleteArea(areaId){
+  const a = getArea(areaId); if(!a) return;
+  const used = state.plants.some(p=>p.areaId===areaId);
+  if(used) return alert("Bereich wird noch von Pflanzen verwendet. Bitte erst umhängen/löschen.");
+  if(confirm(`Bereich „${a.name}“ wirklich löschen?`)){
+    state.areas = state.areas.filter(x=>x.id!==areaId);
+    save(); renderAll();
+  }
+}
+function deleteBed(areaId, bedId){
+  const a = getArea(areaId); if(!a) return;
+  const b = getBed(areaId, bedId); if(!b) return;
+  const used = state.plants.some(p=>p.bedId===bedId);
+  if(used) return alert("Beet wird noch von Pflanzen verwendet. Bitte erst umhängen/löschen.");
+  if(confirm(`Beet „${b.name}“ löschen?`)){
+    a.beds = (a.beds||[]).filter(x=>x.id!==bedId);
+    save(); renderAll();
+  }
+}
+function renderAreas(){
+  renderAreaSelects();
+  const container = el("areasList");
+  const sorted = state.areas.slice().sort((a,b)=>a.name.localeCompare(b.name,"de"));
+
+  if(sorted.length===0){
+    container.innerHTML = `<div class="hint">Noch keine Bereiche. Lege oben einen Bereich an.</div>`;
+    return;
+  }
+
+  container.innerHTML = sorted.map(a=>{
+    const beds = (a.beds||[]).slice().sort((x,y)=>x.name.localeCompare(y.name,"de"));
+    const bedHtml = beds.length
+      ? beds.map(b=>`
+          <div class="row" style="justify-content:space-between;align-items:center;margin:6px 0">
+            <span class="pill"><span>🪴</span> <strong>${escapeHtml(b.name)}</strong></span>
+            <button class="btn small danger" onclick="deleteBed('${a.id}','${b.id}')">Löschen</button>
+          </div>
+        `).join("")
+      : `<div class="hint">Noch keine Beete in diesem Bereich.</div>`;
+
+    return `
+      <div class="panel" style="margin-bottom:12px">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <div>
+            <div class="pill"><span>📍</span> <strong>${escapeHtml(a.name)}</strong></div>
+            <div class="hint" style="margin-top:6px">Beete:</div>
+          </div>
+          <button class="btn small danger" onclick="deleteArea('${a.id}')">Bereich löschen</button>
+        </div>
+        <div class="divider"></div>
+        ${bedHtml}
+      </div>
+    `;
+  }).join("");
+}
+
+/* Batch actions */
+function openAreaInPlants(areaId){
+  showSection("plants");
+  el("areaFilter").value = areaId;
+  renderPlants();
+}
+function batchWaterArea(areaId){
+  const a = getArea(areaId);
+  if(!a) return;
+  const plants = state.plants.filter(p=>p.areaId===areaId);
+  if(plants.length===0) return alert(`In „${a.name}“ sind noch keine Pflanzen.`);
+  if(!confirm(`Alle Pflanzen in „${a.name}“ auf „heute gegossen“ setzen?`)) return;
+  const t = todayISO();
+  for(const p of plants) p.lastWater = t; // wirklich ALLE
+  save(); renderAll();
+}
+function renderAreaTiles(){
+  const tiles = el("areaTiles");
+  const sorted = state.areas.slice().sort((a,b)=>a.name.localeCompare(b.name,"de"));
+
+  if(sorted.length===0){
+    tiles.innerHTML = `<div class="panel"><div class="hint">Lege im Tab „Bereiche“ einen Bereich an.</div></div>`;
+    return;
+  }
+
+  tiles.innerHTML = sorted.map(a=>{
+    const ps = state.plants.filter(p=>p.areaId===a.id);
+    let red=0,yellow=0,green=0;
+    for(const p of ps){
+      const s = computeWaterStatus(p).key;
+      if(s==="red") red++; else if(s==="yellow") yellow++; else green++;
+    }
+    return `
+      <div class="tile">
+        <div class="tileHead">
+          <div style="cursor:pointer" onclick="openAreaInPlants('${a.id}')">
+            <h3>📍 ${escapeHtml(a.name)}</h3>
+            <div class="hint" style="margin-top:6px">${ps.length} Pflanze(n)</div>
+          </div>
+          <button class="btn small primary" onclick="batchWaterArea('${a.id}')">💧 alle</button>
+        </div>
+        <div class="counts">
+          <span class="count">🔴 <b>${red}</b></span>
+          <span class="count">🟡 <b>${yellow}</b></span>
+          <span class="count">🟢 <b>${green}</b></span>
+        </div>
+        <div class="tileActions">
+          <button class="btn small ghost" onclick="openAreaInPlants('${a.id}')">🌿 anzeigen</button>
+          <button class="btn small ghost" onclick="batchWaterArea('${a.id}')">💧 heute gegossen</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+function renderQuickActions(){
+  const wrap = el("quickActions");
+  const sorted = state.areas.slice().sort((a,b)=>a.name.localeCompare(b.name,"de")).slice(0, 6);
+
+  if(sorted.length===0){
+    wrap.innerHTML = `<div class="hint">Lege zuerst Bereiche an.</div>`;
+    return;
+  }
+
+  wrap.innerHTML = sorted.map(a=>{
+    const ps = state.plants.filter(p=>p.areaId===a.id);
+    const due = ps.filter(p=>computeWaterStatus(p).key==="red").length;
+    return `
+      <div class="task">
+        <div class="left">
+          <div class="row">
+            <span class="badge">📍 <b>${escapeHtml(a.name)}</b></span>
+            <span class="badge">🌿 <b>${ps.length}</b></span>
+            <span class="badge">🔴 <b>${due}</b> fällig</span>
+          </div>
+          <div class="hint" style="margin-top:8px">Schnell: alle Pflanzen im Bereich auf „heute gegossen“ setzen.</div>
+        </div>
+        <div class="right">
+          <button class="btn small ghost" onclick="openAreaInPlants('${a.id}')">🌿 öffnen</button>
+          <button class="btn small primary" onclick="batchWaterArea('${a.id}')">💧 alle</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+/* Dashboard */
+function renderDashboard(){
+  const w = state.weather;
+  const temp = (typeof w.tempC==="number") ? `${Math.round(w.tempC)}°C` : "–";
+  const rain = (typeof w.rainProb==="number") ? `${Math.round(w.rainProb)}%` : "–";
+  const upd  = w.updatedAt ? new Date(w.updatedAt).toLocaleString("de-DE") : "–";
+
+  const pills = [];
+  pills.push(`🗓️ <strong>${new Date().toLocaleDateString("de-DE",{weekday:"long", day:"2-digit", month:"2-digit", year:"numeric"})}</strong>`);
+  pills.push(`🌡 <strong>${temp}</strong>`);
+  pills.push(`🌧 <strong>${rain}</strong>`);
+  pills.push(`⏱️ <strong>${upd}</strong>`);
+  el("dashPills").innerHTML = pills.map(p=>`<span class="pill">${p}</span>`).join("");
+
+  let red=0,yellow=0,green=0;
+  for(const p of state.plants){
+    const s = computeWaterStatus(p).key;
+    if(s==="red") red++; else if(s==="yellow") yellow++; else green++;
+  }
+  el("needNow").textContent = red;
+  el("needSoon").textContent = yellow;
+  el("needOk").textContent = green;
+
+  el("loc").textContent = w.locationText || "–";
+  el("temp").textContent = temp;
+  el("rain").textContent = rain;
+
+  renderQuickActions();
+  renderAreaTiles();
+  el("todayTasksMini").innerHTML = `<div class="hint">Aufgaben-Tab ist im Lite-Export nicht enthalten.</div>`;
+}
+
+/* Plants */
+function renderPlants(){
+  renderAreaSelects();
+
+  const q = (el("q").value || "").trim().toLowerCase();
+  const areaId = el("areaFilter").value || "all";
+  const status = el("statusFilter").value || "all";
+
+  let list = [...state.plants];
+
+  if(q){
+    list = list.filter(p=>{
+      const hay = [p.name, p.notes, plantAreaName(p), plantBedName(p)].join(" ").toLowerCase();
+      return hay.includes(q);
+    });
+  }
+  if(areaId !== "all") list = list.filter(p=>p.areaId===areaId);
+  if(status !== "all") list = list.filter(p=>computeWaterStatus(p).key===status);
+
+  const order = {red:0,yellow:1,green:2};
+  list.sort((a,b)=>{
+    const sa = computeWaterStatus(a).key;
+    const sb = computeWaterStatus(b).key;
+    if(order[sa]!==order[sb]) return order[sa]-order[sb];
+    const aa = plantAreaName(a).localeCompare(plantAreaName(b),"de");
+    if(aa!==0) return aa;
+    return (a.name||"").localeCompare(b.name||"","de");
+  });
+
+  const wrap = el("plants");
+  if(list.length===0){
+    wrap.innerHTML = `
+      <div class="card" style="grid-column:1/-1; text-align:center">
+        <h2 style="margin:0 0 6px">Noch nichts gefunden 🌿</h2>
+        <p class="muted" style="margin:0">Füge eine Pflanze hinzu oder ändere Filter/Suche.</p>
+      </div>
+    `;
+    return;
+  }
+
+  wrap.innerHTML = list.map(p=>{
+    const s = computeWaterStatus(p);
+    const last = p.lastWater ? new Date(p.lastWater).toLocaleDateString("de-DE") : "–";
+    const photo = p.photoDataUrl ? `<img alt="" src="${p.photoDataUrl}">` : `<div class="ph" aria-hidden="true">📷</div>`;
+    const winterTag = (p.winter==="yes") ? "❄️ winterfest" : "🧤 nicht sicher";
+    const area = plantAreaName(p);
+    const bed = plantBedName(p);
+
+    return `
+      <article class="plant" id="plant-${p.id}">
+        <div class="photo">${photo}</div>
+        <div class="body">
+          <div class="top">
+            <div>
+              <h3>${escapeHtml(p.name || "Ohne Name")}</h3>
+              <div class="muted tiny">${escapeHtml(s.hint)} • zuletzt: ${escapeHtml(last)}</div>
+            </div>
+            <div class="status">${s.text}</div>
+          </div>
+
+          <div class="meta">
+            <span class="tag">📍 ${escapeHtml(area)}</span>
+            <span class="tag gray">🪴 ${escapeHtml(bed)}</span>
+            <span class="tag">${iconSun(p.sun)} ${escapeHtml(p.sun||"–")}</span>
+            <span class="tag rose">💧 ${escapeHtml(waterLabel(p.waterNeed))} • ${escapeHtml(String(p.waterInt||3))}T</span>
+            <span class="tag gray">${winterTag}</span>
+          </div>
+
+          <div class="note">${escapeHtml(p.notes || "Keine Notizen – aber bestimmt wunderschön 🌸")}</div>
+
+          <div class="actions">
+            <button class="btn small primary" onclick="waterNow('${p.id}')">💧 Heute gegossen</button>
+            <button class="btn small ghost" onclick="openPlant('${p.id}')">🔎 Detail</button>
+            <button class="btn small ghost" onclick="openQRForPlant('${p.id}')">🏷️ QR</button>
+            <button class="btn small danger" onclick="deletePlant('${p.id}')">🗑️ Löschen</button>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+function waterNow(id){
+  const p = state.plants.find(x=>x.id===id);
+  if(!p) return;
+  p.lastWater = todayISO();
+  save(); renderAll();
+}
+function deletePlant(id){
+  const p = state.plants.find(x=>x.id===id);
+  if(!p) return;
+  if(confirm(`„${p.name}“ wirklich löschen?`)){
+    state.plants = state.plants.filter(x=>x.id!==id);
+    state.problems = state.problems.filter(pr=>pr.plantId!==id);
+    save(); renderAll();
+  }
+}
+
+/* Plant modal */
+let currentPlantId = null;
+function seedMonthSelect(selId){
+  el(selId).innerHTML = MONTHS.map((m,i)=>`<option value="${i+1}">${m}</option>`).join("");
+}
+function selectedMulti(sel){
+  return Array.from(sel.selectedOptions).map(o=>Number(o.value)).filter(n=>!Number.isNaN(n));
+}
+function setSelectedMulti(sel, values){
+  const set = new Set(values||[]);
+  for(const opt of sel.options) opt.selected = set.has(Number(opt.value));
+}
+function updateBedSelectForArea(areaId, targetSelectId, selectedBedId=null){
+  const a = getArea(areaId);
+  const beds = (a?.beds || []).slice().sort((x,y)=>x.name.localeCompare(y.name,"de"));
+  const sel = el(targetSelectId);
+
+  const opts = beds.length
+    ? beds.map(b=>`<option value="${b.id}">${escapeHtml(b.name)}</option>`).join("")
+    : `<option value="">(kein Beet – bitte anlegen)</option>`;
+
+  sel.innerHTML = opts;
+  if(selectedBedId && beds.some(b=>b.id===selectedBedId)) sel.value = selectedBedId;
+  else if(beds.length) sel.value = beds[0].id;
+}
+
+function lockModal(on){ document.body.classList.toggle("modal-open", !!on); }
+
+function openPlant(id=null){
+  renderAreaSelects();
+  seedMonthSelect("p_sow"); seedMonthSelect("p_out"); seedMonthSelect("p_harvest");
+
+  if(state.areas.length===0){
+    alert("Bitte zuerst einen Bereich anlegen 🙂");
+    return;
+  }
+
+  if(id){
+    currentPlantId = id;
+    const p = state.plants.find(x=>x.id===id);
+    if(!p) return;
+
+    el("plantTitle").textContent = `🌿 ${p.name}`;
+    el("p_name").value = p.name || "";
+    el("p_area").value = p.areaId || state.areas[0].id;
+    updateBedSelectForArea(el("p_area").value, "p_bed", p.bedId);
+
+    el("p_sun").value = p.sun || "Halbschatten";
+    el("p_water").value = p.waterNeed || "medium";
+    el("p_waterInt").value = Number(p.waterInt ?? 3);
+    el("p_fertInt").value = Number(p.fertInt ?? 0);
+    el("p_pruneInt").value = Number(p.pruneInt ?? 0);
+
+    el("p_lastWater").value = p.lastWater || todayISO();
+    el("p_lastFert").value = p.lastFert || "";
+    el("p_lastPrune").value = p.lastPrune || "";
+    el("p_winter").value = p.winter || "yes";
+    el("p_notes").value = p.notes || "";
+    el("p_photo").value = "";
+
+    setSelectedMulti(el("p_sow"), p.sowMonths || []);
+    setSelectedMulti(el("p_out"), p.outMonths || []);
+    setSelectedMulti(el("p_harvest"), p.harvestMonths || []);
+  }else{
+    currentPlantId = null;
+    el("plantTitle").textContent = `🌿 Neue Pflanze`;
+    el("p_name").value = "";
+    el("p_area").value = state.areas[0].id;
+    updateBedSelectForArea(el("p_area").value, "p_bed", null);
+
+    el("p_sun").value = "Halbschatten";
+    el("p_water").value = "medium";
+    el("p_waterInt").value = 3;
+    el("p_fertInt").value = 0;
+    el("p_pruneInt").value = 0;
+
+    el("p_lastWater").value = todayISO();
+    el("p_lastFert").value = "";
+    el("p_lastPrune").value = "";
+    el("p_winter").value = "yes";
+    el("p_notes").value = "";
+    el("p_photo").value = "";
+
+    setSelectedMulti(el("p_sow"), []);
+    setSelectedMulti(el("p_out"), []);
+    setSelectedMulti(el("p_harvest"), []);
+  }
+
+  lockModal(true);
+  el("plantBack").style.display="flex";
+  el("plantBack").querySelector(".content").scrollTop = 0;
+}
+function closePlant(){
+  el("plantBack").style.display="none";
+  lockModal(false);
+}
+el("p_area").addEventListener("change", ()=>{
+  updateBedSelectForArea(el("p_area").value, "p_bed", null);
+});
+
+async function savePlantFromModal(){
+  const name = (el("p_name").value||"").trim();
+  if(!name) return alert("Bitte Name eingeben 🙂");
+  const areaId = el("p_area").value;
+  const bedId = el("p_bed").value || "";
+  if(!areaId) return alert("Bitte Bereich wählen 🙂");
+  if(!bedId) return alert("Bitte ein Beet im Bereich anlegen 🙂");
+
+  const sun = el("p_sun").value;
+  const waterNeed = el("p_water").value;
+  const waterInt = Math.max(1, Number(el("p_waterInt").value || 3));
+  const fertInt = Math.max(0, Number(el("p_fertInt").value || 0));
+  const pruneInt = Math.max(0, Number(el("p_pruneInt").value || 0));
+
+  const lastWater = el("p_lastWater").value || todayISO();
+  const lastFert = el("p_lastFert").value || "";
+  const lastPrune = el("p_lastPrune").value || "";
+  const winter = el("p_winter").value;
+  const notes = (el("p_notes").value||"").trim();
+
+  const sowMonths = selectedMulti(el("p_sow"));
+  const outMonths = selectedMulti(el("p_out"));
+  const harvestMonths = selectedMulti(el("p_harvest"));
+
+  let photoDataUrl = null;
+  const file = el("p_photo").files && el("p_photo").files[0];
+  if(file) photoDataUrl = await readFileAsDataURL(file);
+
+  if(currentPlantId){
+    const idx = state.plants.findIndex(x=>x.id===currentPlantId);
+    if(idx<0) return;
+    const old = state.plants[idx];
+    state.plants[idx] = {
+      ...old,
+      name, areaId, bedId, sun, waterNeed, waterInt, fertInt, pruneInt,
+      lastWater, lastFert, lastPrune, winter, notes,
+      sowMonths, outMonths, harvestMonths,
+      photoDataUrl: photoDataUrl ?? old.photoDataUrl ?? null
+    };
+  }else{
+    state.plants.unshift({
+      id: uid(),
+      name, areaId, bedId, sun, waterNeed, waterInt, fertInt, pruneInt,
+      lastWater, lastFert, lastPrune, winter, notes,
+      sowMonths, outMonths, harvestMonths,
+      photoDataUrl: photoDataUrl ?? null
+    });
+  }
+
+  save();
+  renderAll();
+  closePlant();
+}
+
+/* Calendar lite */
+function plantMonthEvents(p, monthIndex){
+  const ev = [];
+  const m = monthIndex+1;
+  const area = plantAreaName(p);
+  const bed = plantBedName(p);
+  const mk = (icon, title)=>ev.push({icon, title, plantId:p.id, meta:`${area} • ${bed}`});
+  if((p.sowMonths||[]).includes(m)) mk("🌱","Aussaat");
+  if((p.outMonths||[]).includes(m)) mk("🪴","Auspflanzen");
+  if((p.harvestMonths||[]).includes(m)) mk("🍅","Ernte");
+  return ev.map(x=>({...x, plant:p.name}));
+}
+function renderCalendar(){
+  renderAreaSelects();
+  const now = new Date();
+  const cur = now.getMonth();
+  if(!el("calMonth").dataset.ready){
+    el("calMonth").innerHTML = MONTHS.map((m,i)=>`<option value="${i}">${m}</option>`).join("");
+    el("calMonth").value = String(cur);
+    el("calMonth").dataset.ready = "1";
+  }
+  const monthIndex = Number(el("calMonth").value || cur);
+  const area = el("calArea").value || "all";
+
+  let plants = [...state.plants];
+  if(area !== "all") plants = plants.filter(p=>p.areaId===area);
+
+  let items = [];
+  for(const p of plants) items = items.concat(plantMonthEvents(p, monthIndex));
+  const prio = {"Aussaat":0,"Auspflanzen":1,"Ernte":2};
+  items.sort((a,b)=> (prio[a.title]??9) - (prio[b.title]??9) || a.plant.localeCompare(b.plant,"de"));
+
+  const wrap = el("calendarList");
+  if(items.length===0){
+    wrap.innerHTML = `<div class="hint">Für ${MONTHS[monthIndex]} ist nichts eingetragen.</div>`;
+    return;
+  }
+
+  wrap.innerHTML = items.map(it=>`
+    <div class="calItem">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <div>
+          <div class="badge">${it.icon} <b>${escapeHtml(it.title)}</b> • ${escapeHtml(it.plant)}</div>
+          <div class="hint" style="margin-top:8px">${escapeHtml(it.meta)}</div>
+        </div>
+        <button class="btn small ghost" onclick="openPlant('${it.plantId}')">🔎 Detail</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+/* Problems render stub */
+function renderProblems(){ el("problemsList").innerHTML = `<div class="hint">Probleme-Tab ist im Lite-Export nicht enthalten.</div>`; }
+
+/* QR + printing */
+let currentQr = { plantId:null, text:null };
+function buildPlantDeepLink(plantId){
+  const url = new URL(window.location.href);
+  url.searchParams.set("plant", plantId);
+  return url.toString();
+}
+function qrUrl(data){
+  const size = "280x280";
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}&data=${encodeURIComponent(data)}`;
+}
+function openQRForPlant(plantId){
+  const p = state.plants.find(x=>x.id===plantId);
+  if(!p) return;
+  const link = buildPlantDeepLink(plantId);
+  currentQr = {plantId, text: link};
+
+  el("qrTitle").textContent = "🏷️ QR-Label";
+  el("qrName").textContent = p.name;
+  el("qrText").textContent = link;
+  el("qrImg").src = qrUrl(link);
+
+  const meta = [];
+  meta.push(`<span class="pill"><span>📍</span><strong>${escapeHtml(plantAreaName(p))}</strong></span>`);
+  meta.push(`<span class="pill"><span>🪴</span><strong>${escapeHtml(plantBedName(p))}</strong></span>`);
+  meta.push(`<span class="pill"><span>${iconSun(p.sun)}</span><strong>${escapeHtml(p.sun||"–")}</strong></span>`);
+  meta.push(`<span class="pill"><span>💧</span><strong>${escapeHtml(waterLabel(p.waterNeed))}</strong></span>`);
+  el("qrMeta").innerHTML = meta.join("");
+
+  lockModal(true);
+  el("qrBack").style.display="flex";
+  el("qrBack").querySelector(".content").scrollTop = 0;
+}
+function closeQR(){ el("qrBack").style.display="none"; lockModal(false); }
+async function copyQrLink(){
+  try{ await navigator.clipboard.writeText(currentQr.text || ""); alert("Link kopiert ✅"); }
+  catch(e){ alert("Kopieren ging nicht automatisch – du kannst den Link markieren und kopieren."); }
+}
+function printSmallLabels(){
+  const p = state.plants.find(x=>x.id===currentQr.plantId);
+  if(!p) return;
+  const link = currentQr.text || "";
+  const img = qrUrl(link);
+
+  const html2 = `
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+@page{ size:A4; margin:10mm; }
+body{ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; margin:0; }
+.sheet{ display:grid; grid-template-columns:repeat(2,1fr); gap:6mm; }
+.label{ width:50mm; height:30mm; border:.3mm solid rgba(0,0,0,.20); border-radius:3mm; padding:2.5mm;
+ display:grid; grid-template-columns:18mm 1fr; gap:2.5mm; align-items:center; overflow:hidden; }
+.qr{ width:18mm; height:18mm; border-radius:2mm; border:.2mm solid rgba(0,0,0,.12); background:#fff; display:block; }
+.txt{ display:flex; flex-direction:column; gap:1.2mm; line-height:1.1; }
+.name{ font-size:9pt; font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.meta{ font-size:7pt; color:#555; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.small{ font-size:6.5pt; color:#777; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+</style></head><body>
+<div class="sheet">
+${Array.from({length:12}).map(()=>`
+  <div class="label">
+    <img class="qr" src="${img}" alt="QR">
+    <div class="txt">
+      <div class="name">🌿 ${escapeHtml(p.name)}</div>
+      <div class="meta">📍 ${escapeHtml(plantAreaName(p))}</div>
+      <div class="small">🪴 ${escapeHtml(plantBedName(p))}</div>
+    </div>
+  </div>`).join("")}
+</div>
+<script>window.onload=()=>window.print();<\/script>
+</body></html>`;
+  const w = window.open("", "_blank");
+  w.document.open(); w.document.write(html2); w.document.close();
+}
+function printLargeSign(){
+  const p = state.plants.find(x=>x.id===currentQr.plantId);
+  if(!p) return;
+  const link = currentQr.text || "";
+  const img = qrUrl(link);
+
+  const html2 = `
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+@page{ size:A4; margin:12mm; }
+body{ font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; margin:0; }
+.sign{ width:100mm; height:70mm; border:.4mm solid rgba(0,0,0,.22); border-radius:6mm; padding:6mm;
+ display:grid; grid-template-columns:46mm 1fr; gap:6mm; align-items:center; background:#fff; }
+.qr{ width:46mm; height:46mm; border-radius:4mm; border:.2mm solid rgba(0,0,0,.12); background:#fff; display:block; }
+.name{ font-size:18pt; font-weight:950; margin:0 0 4mm 0; line-height:1.05; }
+.meta{ font-size:11pt; color:#444; line-height:1.25; }
+.meta b{ color:#222; }
+.tiny{ margin-top:4mm; font-size:8pt; color:#777; word-break:break-all; }
+</style></head><body>
+<div class="sign">
+  <img class="qr" src="${img}" alt="QR">
+  <div>
+    <div class="name">🌿 ${escapeHtml(p.name)}</div>
+    <div class="meta">📍 <b>${escapeHtml(plantAreaName(p))}</b><br/>🪴 <b>${escapeHtml(plantBedName(p))}</b><br/>${iconSun(p.sun)} ${escapeHtml(p.sun||"–")} • 💧 ${escapeHtml(waterLabel(p.waterNeed))}</div>
+    <div class="tiny">${escapeHtml(link)}</div>
+  </div>
+</div>
+<script>window.onload=()=>window.print();<\/script>
+</body></html>`;
+  const w = window.open("", "_blank");
+  w.document.open(); w.document.write(html2); w.document.close();
+}
+
+/* Deep link */
+let deepLinkHandled = false;
+function handleDeepLink(){
+  if(deepLinkHandled) return;
+  const url = new URL(window.location.href);
+  const pid = url.searchParams.get("plant");
+  if(!pid) return;
+  const exists = state.plants.some(p=>p.id===pid);
+  if(!exists) return;
+  showSection("plants");
+  setTimeout(()=>{
+    const card = document.getElementById("plant-"+pid);
+    if(card){
+      card.scrollIntoView({behavior:"smooth", block:"center"});
+      card.style.outline = "3px solid rgba(201,106,99,.35)";
+      setTimeout(()=>card.style.outline="none", 2500);
+    }
+  }, 250);
+  deepLinkHandled = true;
+}
+
+/* Export/Import */
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `JANAS_Gartenwelt_Backup_${todayISO()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+async function importJSONFile(file){
+  try{
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if(!data || typeof data !== "object") throw new Error("Ungültig");
+    if(!Array.isArray(data.areas) || !Array.isArray(data.plants) || !Array.isArray(data.problems)) {
+      throw new Error("Backup Struktur passt nicht.");
+    }
+    state.areas = data.areas;
+    state.plants = data.plants;
+    state.problems = data.problems;
+    state.weather = data.weather ? {...state.weather, ...data.weather} : state.weather;
+    save();
+    alert("Import erfolgreich ✅");
+    renderAll();
+  }catch(e){
+    console.warn(e);
+    alert("Import fehlgeschlagen: Datei ist kein gültiges Backup.");
+  }
+}
+
+/* Reset */
+function resetAll(){
+  if(confirm("Wirklich ALLES löschen?")){
+    localStorage.removeItem(LS_KEY);
+    state.areas = [];
+    state.plants = [];
+    state.problems = [];
+    state.weather = { ok:false, locationText:"–", tempC:null, rainProb:null, updatedAt:null };
+    ensureDefaults();
+    save();
+    renderAll();
+  }
+}
+
+/* Render all */
+function renderAll(){
+  renderNav();
+  renderAreaSelects();
+  renderDashboard();
+  if(currentSection==="areas") renderAreas();
+  if(currentSection==="plants") renderPlants();
+  if(currentSection==="calendar") renderCalendar();
+  if(currentSection==="problems") renderProblems();
+  handleDeepLink();
+}
+
+/* Events */
+el("btnWeather").addEventListener("click", fetchWeather);
+el("btnReset").addEventListener("click", resetAll);
+el("btnAddPlant").addEventListener("click", ()=>openPlant(null));
+el("btnAddArea").addEventListener("click", ()=>{
+  renderAreaSelects();
+  lockModal(true);
+  el("areaBack").style.display="flex";
+  el("areaBack").querySelector(".content").scrollTop = 0;
+});
+
+el("btnExport").addEventListener("click", exportJSON);
+el("btnExport2").addEventListener("click", exportJSON);
+
+el("importFile").addEventListener("change", (e)=>{
+  if(e.target.files && e.target.files[0]) importJSONFile(e.target.files[0]);
+  e.target.value = "";
+});
+el("importFile2").addEventListener("change", (e)=>{
+  if(e.target.files && e.target.files[0]) importJSONFile(e.target.files[0]);
+  e.target.value = "";
+});
+
+el("q").addEventListener("input", renderPlants);
+el("areaFilter").addEventListener("change", renderPlants);
+el("statusFilter").addEventListener("change", renderPlants);
+
+el("calMonth").addEventListener("change", renderCalendar);
+el("calArea").addEventListener("change", renderCalendar);
+
+el("btnCreateArea").addEventListener("click", ()=>{
+  createArea(el("newAreaName").value);
+  el("newAreaName").value="";
+});
+el("btnCreateBed").addEventListener("click", ()=>{
+  createBed(el("bedAreaSelect").value, el("newBedName").value);
+  el("newBedName").value="";
+});
+el("btnQuickArea").addEventListener("click", ()=>{
+  createArea(el("quickAreaName").value);
+  el("quickAreaName").value="";
+});
+el("btnQuickBed").addEventListener("click", ()=>{
+  createBed(el("quickBedArea").value, el("quickBedName").value);
+  el("quickBedName").value="";
+});
+
+function wireModalClose(backId, closeFn){
+  const back = el(backId);
+  back.addEventListener("click", (e)=>{ if(e.target===back) closeFn(); });
+}
+wireModalClose("plantBack", closePlant);
+wireModalClose("areaBack", ()=>{ el("areaBack").style.display="none"; lockModal(false); });
+wireModalClose("qrBack", closeQR);
+
+el("btnPlantClose").addEventListener("click", closePlant);
+el("btnSavePlant").addEventListener("click", savePlantFromModal);
+el("btnDeletePlant").addEventListener("click", ()=>{
+  if(!currentPlantId) return closePlant();
+  deletePlant(currentPlantId);
+  closePlant();
+});
+el("btnPlantQR").addEventListener("click", ()=>{
+  if(!currentPlantId) return alert("Bitte erst speichern 🙂");
+  openQRForPlant(currentPlantId);
+});
+
+el("btnAreaClose").addEventListener("click", ()=>{ el("areaBack").style.display="none"; lockModal(false); });
+
+el("btnQrClose").addEventListener("click", closeQR);
+el("btnCopy").addEventListener("click", copyQrLink);
+el("btnPrintLabels").addEventListener("click", printSmallLabels);
+el("btnPrintSign").addEventListener("click", printLargeSign);
+
+/* Init */
+(function init(){
+  setupPwaLight();
+  load();
+  ensureDefaults();
+  save();
+
+  el("calMonth").dataset.ready = "";
+  renderNav();
+  showSection("dashboard");
+  renderAll();
+
+  if(!state.weather.updatedAt){ fetchWeather().catch(()=>{}); }
+})();
+</script>
+</body>
+</html>
